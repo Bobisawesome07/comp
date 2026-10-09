@@ -6,6 +6,7 @@ import './styles.css';
 const SUBJECTS = [{id:'basic_math',label:'Basic math'},{id:'algebra',label:'Algebra'},{id:'geometry',label:'Geometry'},{id:'calculus',label:'Calculus'},{id:'statistics',label:'Statistics'},{id:'computer_science',label:'Computer science'}];
 const ROOMS = ['The Foyer','The Library','The Secret Study','The Final Door'];
 const formatTime = (seconds:number) => `${Math.floor(seconds/60).toString().padStart(2,'0')}:${(seconds%60).toString().padStart(2,'0')}`;
+const requestId = () => typeof crypto.randomUUID==='function' ? crypto.randomUUID() : Array.from(crypto.getRandomValues(new Uint8Array(16)),b=>b.toString(16).padStart(2,'0')).join('');
 function savedSession(key:string): Session|null {try {return JSON.parse(sessionStorage.getItem(key)||'null');} catch {return null;}}
 
 function Icon({name='key',size=22}:{name?:string;size?:number}) {
@@ -95,7 +96,7 @@ function App() {
  function leave(){sessionStorage.removeItem('lastkey.session');setSession(null);setState(null);setError('');}
  function send(type:string,extra:Record<string,unknown>={}) {
   if(socket.current?.readyState!==WebSocket.OPEN || connection!=='online'){setError('Wait for the connection to return.');return;}
-  const request_id=crypto.randomUUID();pending.current.set(request_id,type);setSending(true);setError('');
+  const request_id=requestId();pending.current.set(request_id,type);setSending(true);setError('');
   socket.current.send(JSON.stringify({type,request_id,...extra}));
  }
  async function join(name:string,code?:string) {
