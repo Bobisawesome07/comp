@@ -1,4 +1,6 @@
-import { parse, type MathNode } from 'mathjs';
+import { create, parseDependencies, type MathNode } from 'mathjs';
+
+const {parse} = create({parseDependencies});
 
 const escape = (value: string) => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
 const wrap = (tag: string, value: string) => `<${tag}>${value}</${tag}>`;
