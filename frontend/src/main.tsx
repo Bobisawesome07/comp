@@ -134,8 +134,9 @@ function Home({join,busy,resume,showRules}:{join:(name:string,code?:string)=>voi
 
 function RoomCode({code}:{code:string}) {
  const [copied,setCopied]=useState(false);
- async function copy(){try{await navigator.clipboard.writeText(`${location.origin}/?room=${code}`);setCopied(true);setTimeout(()=>setCopied(false),2000);}catch{window.prompt('Copy this invitation link',`${location.origin}/?room=${code}`);}}
- return <button className="room-code" onClick={copy} aria-label={`Room code ${code}. Copy invitation link.`}><span>ROOM CODE</span><strong>{code}</strong><Icon name={copied?'check':'copy'} size={18}/><small>{copied?'Link copied':'Invite your team'}</small></button>;
+ const joinUrl = `${location.origin}/?room=${code}`;
+ async function copy(){try{await navigator.clipboard.writeText(joinUrl);setCopied(true);setTimeout(()=>setCopied(false),2000);}catch{window.prompt('Copy this invitation link',joinUrl);}}
+ return <div className="room-invite"><button className="room-code" onClick={copy} aria-label={`Room code ${code}. Copy invitation link.`}><span>ROOM CODE</span><strong>{code}</strong><Icon name={copied?'check':'copy'} size={18}/><small>{copied?'Link copied':'Invite your team'}</small></button><div className="room-join-url"><span>Players join at</span><a href={joinUrl} target="_blank" rel="noopener noreferrer">{joinUrl}</a></div></div>;
 }
 
 function Lobby({state,subjects,send,disabled}:{state:State;subjects:typeof SUBJECTS;send:(t:string,e?:Record<string,unknown>)=>void;disabled:boolean}) {
