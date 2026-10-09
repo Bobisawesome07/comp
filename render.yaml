@@ -1,0 +1,21 @@
+# Select service plans in Render before deploying; no paid resources are created by this file alone.
+services:
+  - type: web
+    name: the-last-key
+    runtime: docker
+    plan: free
+    numInstances: 1
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: the-last-key-rooms
+          property: connectionString
+  - type: keyvalue
+    name: the-last-key-rooms
+    plan: free
+    ipAllowList: []
+    maxmemoryPolicy: noeviction
